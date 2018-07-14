@@ -47,10 +47,12 @@ Playground.Playground = function(elements, data, options){
     this.setTick(tick);
   }).bind(this);
 
+
+    //TODO Probably need to change onhashchange to some button event
   (window.onhashchange = (function(e){
 
     // update description
-    var connector = data.connectors[location.hash.slice(1)];
+    var connector = playgroundData.input;
     if(!connector)
       return;
 

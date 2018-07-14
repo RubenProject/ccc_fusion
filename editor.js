@@ -129,10 +129,10 @@
     return id;
   }
 
-  function createNode(left, top) {
+  function createNode(x, y) {
     var node = new fabric.Circle({
-      left: left,
-      top: top,
+      x: x,
+      y: y,
       strokeWidth: lineStrokeWidth,
       fill: nodeFillColourSource,
       radius: nodeFactor * lineStrokeWidth,
@@ -147,8 +147,8 @@
     node.channels = [];
     
     var label = new fabric.IText(node.id, {
-      left: left + 20,
-      top: top - 20,
+      x: x + 20,
+      y: y - 20,
       fontSize: 20,
       object: node,
       class: 'label',
@@ -165,10 +165,10 @@
     return node;
   } //createNode
   
-  function createAnchor(left, top) {
+  function createAnchor(x, y) {
     var anchor = new fabric.Circle({
-      left: left,
-      top: top,
+      x: x,
+      y: y,
       strokeWidth: lineStrokeWidth,
       radius: nodeFactor * lineStrokeWidth,
       stroke: lineStrokeColour,
@@ -195,8 +195,8 @@
       width: 5,
       height: 100,
       baseLength: 100,
-      left: Math.min(x1,x2) + diffX / 2,
-      top: Math.min(y1,y2) + diffY / 2,
+      x: Math.min(x1,x2) + diffX / 2,
+      y: Math.min(y1,y2) + diffY / 2,
       angle: 90,
       fill: 'red',
       visible: false,
@@ -263,8 +263,8 @@
   
   function calculateAngle(channel, baseAngle) {
     var angle = 0;
-    var x = (channel.node2.get('left') - channel.node1.get('left'));
-    var y = (channel.node2.get('top')  - channel.node1.get('top'));
+    var x = (channel.node2.x - channel.node1.x);
+    var y = (channel.node2.y  - channel.node1.y);
 
     if (x === 0) {
       angle = (y === 0) ? 0 : (y > 0) ? Math.PI / 2 : Math.PI * 3 / 2;
@@ -308,22 +308,23 @@
   }
   
   function updateChannel(channel) {
-    var x1 = channel.node1.get('left');
-    var y1 = channel.node1.get('top');
-    var x2 = channel.node2.get('left');
-    var y2 = channel.node2.get('top');
+    var x1 = channel.node1.x;
+    var y1 = channel.node1.y;
+    var x2 = channel.node2.x;
+    var y2 = channel.node2.y;
     var diffX = Math.abs(x1-x2);
     var diffY = Math.abs(y1-y2);
     
     // update the reference rectangle
-    channel.components[0].set({'left': Math.min(x1,x2) + diffX / 2});
-    channel.components[0].set({'top': Math.min(y1,y2) + diffY / 2});
-    channel.components[0].set({'angle': calculateAngle(channel, 90)});
+    channel.components[0].x = Math.min(x1,x2) + diffX / 2;
+    channel.components[0].y = Math.min(y1,y2) + diffY / 2;
+    channel.components[0].angle = calculateAngle(channel, 90);
     
     // convert new size to scaling
     var length = Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2,2));
     var scale = length/channel.components[0].baseLength;
-    channel.components[0].set({'scaleX': scale, 'scaleY': scale});
+    channel.components[0].scaleX = scale
+    channel.components[0].scaleY = scale;
     
     channel.components[0].setCoords();
     

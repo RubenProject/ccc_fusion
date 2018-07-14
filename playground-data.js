@@ -277,6 +277,21 @@ playgroundData.components = {
   }
 };
 
+
+playgroundData.input = {
+    desc : "input to animation engine",
+    nodes : {
+      "b": {coord: [160, 160], type: "merge"},
+      "c": {coord: [320, 240], type: "merge"},
+      "d": {coord: [160, 320], type: "merge"},
+      "R": {coord: [480, 240], type: "read"}
+    },
+    channels : {
+    } 
+};
+
+
+
 // Connector definitions
 playgroundData.connectors = {
   "": {
