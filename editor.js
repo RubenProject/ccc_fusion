@@ -116,14 +116,14 @@ var data = {
     });
   };
   
-  document.getElementById("downloadsvg").onclick = function () {
+  document.getElementById("downloadsvg").onclick = function() {
     var a = document.getElementById("download");
     a.download = "reo.svg";
     a.href = 'data:image/svg+xml;base64,' + window.btoa(canvas.toSVG());
     a.click();
   };
   
-  document.getElementById("downloadpng").onclick = function () {
+  document.getElementById("downloadpng").onclick = function() {
     var a = document.getElementById("download");
     a.download = "reo.png";
     a.href = canvas.toDataURL('image/png');
@@ -170,6 +170,7 @@ var data = {
     });
     
     nodes.push(node);
+    data.nodes = nodes;
     return node;
   } //createNode
   
@@ -266,6 +267,7 @@ var data = {
     updateChannel(channel);
     
     channels.push(channel);
+    data.channels = channels;
     return channel;
   } //createChannel
   
@@ -872,14 +874,4 @@ var data = {
   main.label.set({'text': 'main'});
   id = '0';
   document.getElementById("select").click();
-  createChannel('sync',100,100,200,100);
-  createChannel('lossysync',100,200,200,200);
-  createChannel('syncdrain',100,300,200,300);
-  createChannel('syncspout',100,400,200,400);
-  createChannel('fifo1',100,500,200,500);
-  
-  //extract node data
-  data.nodes = nodes;
-  data.channels = channels;
-  data.components = components;
 })();

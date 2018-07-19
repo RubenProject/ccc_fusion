@@ -278,30 +278,6 @@ playgroundData.components = {
 };
 
 
-function convertData(data, channels){
-    var pdata = {};
-
-    pdata.desc = "input to animation engine";
-    pdata.nodes = {};
-    pdata.channels = {}
-
-    for (var i = 0; i < data.nodes.length; i++) {
-        pdata.nodes[data.nodes[i].id] = {coord: [data.nodes[i].left, data.nodes[i].top], type: "merge" };
-    }
-    
-    
-    var id;
-    id = data.channels[0].node1.id + data.channels[0].node2.id;
-    console.log(id);
-    pdata.channels[id] = {sources: ["a"], sinks: ["b"], type: channels["sync"]};
-
-    console.log(data.nodes[0]);
-    console.log(data.channels[0]);
-    return pdata;
-}
-playgroundData.input = convertData(data, playgroundData.channels);
-
-
 // Connector definitions
 playgroundData.connectors = {
   "": {

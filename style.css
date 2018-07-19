@@ -6,12 +6,6 @@ html, body {
   background-color: #dde;
 }
 
-#header {
-  background-color: #bbf;
-  text-align: center;
-  padding: 10px;
-}
-
 #container {
   width: 1300px;
   margin: auto;
@@ -25,11 +19,21 @@ html, body {
   background-color: #888;
 }
 
-#editorPanel {
-  height: 600px;
+#workplace {
+  height: 700px;
   margin-left: 300px;
-  margin-right: 100px;
+  margin-right: 200px;
   background-color: #eee;
+}
+
+#editorPanel {
+  display: block;
+  height: 100%;
+}
+
+#animationPanel {
+  display: none;
+  height: 100%;
 }
 
 #toolbar {
@@ -71,13 +75,25 @@ html, body {
   margin: auto;
 }
 
+#swapButton {
+  display: table-cell;
+  position: center;
+  width: 250px;
+  height: 50px;
+  font-size: 20pt;
+  vertical-align: middle;
+  outline: none;
+}
+
 input {
   margin-top: 7px;
 }
 
-#animation{
-  background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAG0lEQVR42mM4c+bMfwYCgBg1o4BIQExggtQAANoaDY2fVJg1AAAAAElFTkSuQmCC");
+h1 {
+  padding-top: 10px;
 }
+
+
 #timeline{
   display: inline-block;
   vertical-align: middle;

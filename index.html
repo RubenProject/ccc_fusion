@@ -9,14 +9,15 @@
     <title>Online Reo editor</title>
   </head>
   <body>
-    <div id="header">
-      <h1>Online Reo editor</h1>
-    </div>
     <div id="container">
+      <h1>Online Reo editor</h1>
+
+    <!--toolbars -->
       <div id="textdiv">
         <textarea id="text" rows="25" cols="20"></textarea>
         <input id="refresh" type="button" value="Refresh"/>
       </div>
+      
       <div id="toolbar">
         <table>
           <tr>
@@ -26,9 +27,8 @@
         </table>
         <a id="download"></a>
         <input type="button" id="downloadsvg" value="Download SVG"><br />
-        <input type="button" id="downloadpng" value="Download PNG"><br />
+        <input type="button" id="downloadpng" value="Download PNG"><br />        
         <h2>Channels</h2>
-        <!--<input type="button" id="newchannel" value="New channel"><br />-->
         <table>
           <tr>
             <td class="channel" id="sync">
@@ -62,59 +62,55 @@
           </tr>
         </table>
       </div>
-      <div id="editorPanel">
-        <canvas id="editor" width="800" height="600">Please use a browser that supports canvas.</canvas>
-      </div>
-    
 
-
-
-    <div id="animationPanel">
-        <canvas id="animation" width="800" height="600">
-          <span class="unsupported">
-            Your browser does not support or has disabled <noscript>Javascript
-            or</noscript> the &lt;canvas&gt; element, which is required for
-            this application</span>
-        </canvas>
-    <div id="controls">
-          <canvas id="timeline" width="576" height="88"></canvas>
-        <div id="controlButtons">
-            <button class="backward"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- fast-backward icon -->
-  <path d="M 0,1 2,1 2,15 0,15 Z" />
-  <path d="M 9,15 9,1 2,8 Z" />
-  <path d="M 16,15 9,8 16,1 Z" />
-</svg></button>
-<button class="play" data-state="pause">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- play icon -->
-  <path d="M 1,16 1,0 15,8 Z" />
-</svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- pause icon -->
-  <path d="M 2,16 2,0 7,0 7,16 Z" />
-  <path d="M 9,16 9,0 14,0 14,16 Z" />
-</svg></button><button class="forward">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- fast-forward icon -->
-  <path d="M 0,15 0,1 7,8 Z" />
-  <path d="M 7,15 7,1 14,8 Z" />
-  <path d="M 16,15 14,15 14,1 16,1 Z" />
-</svg></button>
-          
-</div></div></div></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!-- canvasses -->
+      <div id="workplace">
+        <!-- editor canvas -->
+        <div id="editorPanel">
+            <canvas id="editor" width="800" height="600">Please use a browser that supports canvas.</canvas>
+        </div>
+        <!-- animation canvas -->
+        <div id="animationPanel">
+            <canvas id="animation" width="800" height="600">
+                <span class="unsupported">
+                    Your browser does not support or has disabled <noscript>Javascript
+                    or</noscript> the &lt;canvas&gt; element, which is required for
+                    this application
+                </span>
+            </canvas>
+            <div id="controls">
+                <canvas id="timeline" width="576" height="88"></canvas>
+                <div id="controlButtons">
+                    <button class="backward">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 0,1 2,1 2,15 0,15 Z" />
+                            <path d="M 9,15 9,1 2,8 Z" />
+                            <path d="M 16,15 9,8 16,1 Z" />
+                        </svg>
+                    </button>
+                    <button class="play" data-state="pause">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 1,16 1,0 15,8 Z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 2,16 2,0 7,0 7,16 Z" />
+                            <path d="M 9,16 9,0 14,0 14,16 Z" />
+                        </svg>
+                    </button>
+                    <button class="forward">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 0,15 0,1 7,8 Z" />
+                            <path d="M 7,15 7,1 14,8 Z" />
+                            <path d="M 16,15 14,15 14,1 16,1 Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <input type="button" id="swapButton" value="Animate!"><br />
+    </div>
+    <!-- end of container -->
 
     <!-- Editor scripts -->
     <script src="fabric.js-2.2.2/dist/fabric.min.js"></script>
