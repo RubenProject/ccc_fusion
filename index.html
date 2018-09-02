@@ -2,8 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <!-- Playground scripts -->
+
+    <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="canvas.js"></script>
     <script type="text/javascript" src="connector.js"></script>
     <title>Online Reo editor</title>
@@ -13,116 +15,99 @@
       <h1>Online Reo editor</h1>
     </div>
     <div id="container">
-      <div id="textdiv">
-        <textarea id="text" rows="25" cols="20"></textarea>
-        <input id="refresh" type="button" value="Refresh"/>
+      <div id="textdiv" class="column">
+        <div id="text" style="text-align: left"></div>
+        <input id="submit" type="button" value="Submit Code Changes"/>
+        <input type="button" id="swapButton" value="Animate!">
+        <br>
+        <input id="commentSwitch" type="checkbox" checked><label for="commentSwitch">Show geometry metadata comments</label>
       </div>
-      <div id="toolbar">
-        <table>
-          <tr>
-            <td class="tool" id="select"><a title="Select"><img src="img/cursor.png" alt="Select"></a></td>
-            <td class="tool" id="component"><a title="New component"><img src="img/component.svg" alt="New component"></a></td>
-          </tr>
-        </table>
+      <div id="workplace" class="column">        
+        <!--EDITOR-->        
+        <div id="editorPanel">
+            <canvas id="c" width="800" height="600">Please use a browser that supports canvas.</canvas>
+        </div>
+        <!--ANIMATION-->             
+        <div id="animationPanel">
+            <canvas id="animation" width="800" height="600">
+                <span class="unsupported">
+                    Your browser does not support or has disabled <noscript>Javascript
+                    or</noscript> the &lt;canvas&gt; element, which is required for
+                    this application
+                </span>
+            </canvas>
+            <div id="controls">
+                <canvas id="timeline" width="576" height="88"></canvas>
+                <div id="controlButtons">
+                    <button class="backward">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 0,1 2,1 2,15 0,15 Z" />
+                            <path d="M 9,15 9,1 2,8 Z" />
+                            <path d="M 16,15 9,8 16,1 Z" />
+                        </svg>
+                    </button>
+                    <button class="play" data-state="pause">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 1,16 1,0 15,8 Z" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 2,16 2,0 7,0 7,16 Z" />
+                            <path d="M 9,16 9,0 14,0 14,16 Z" />
+                        </svg>
+                    </button>
+                    <button class="forward">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                            <path d="M 0,15 0,1 7,8 Z" />
+                            <path d="M 7,15 7,1 14,8 Z" />
+                            <path d="M 16,15 14,15 14,1 16,1 Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div id="toolbar" class="column">
+        <div class="tool" id="select"><a title="Select"><img src="img/cursor.svg" alt="Select"></a></div>
+        <div class="tool" id="split"><a title="Split nodes"><img src="img/split.svg" alt="Split nodes"></a></div>
+        <div class="tool" id="component"><a title="New component"><img src="img/component.svg" alt="New component"></a></div>
         <a id="download"></a>
-        <input type="button" id="downloadsvg" value="Download SVG"><br />
-        <input type="button" id="downloadpng" value="Download PNG"><br />
+        <input type="button" id="downloadSVG" value="Download as SVG"><br/>
+        <input type="button" id="downloadPNG" value="Download as PNG"><br/>
+        <input type="button" id="downloadReo" value="Download as Reo"><br/>
         <h2>Channels</h2>
-        <!--<input type="button" id="newchannel" value="New channel"><br />-->
-        <table>
-          <tr>
-            <td class="channel" id="sync">
-              <a title="Lossy sync"><img src="img/sync.svg" alt="Sync"></a><br />
-              Sync
-            </td>
-          </tr>
-          <tr>
-            <td class="channel" id="lossysync">
-              <a title="Lossy sync"><img src="img/lossysync.svg" alt="Lossy sync"></a><br />
-              Lossy sync
-            </td>
-          </tr>
-          <tr>
-            <td class="channel" id="syncdrain">
-              <a title="Sync drain"><img src="img/syncdrain.svg" alt="Sync drain"></a><br />
-              Sync drain
-            </td>
-          </tr>
-          <tr>
-            <td class="channel" id="syncspout">
-              <a title="Sync spout"><img src="img/syncspout.svg" alt="Sync spout"></a><br />
-              Sync spout
-            </td>
-          </tr>
-          <tr>
-            <td class="channel" id="fifo1">
-              <a title="FIFO1"><img src="img/fifo1.svg" alt="FIFO1"></a><br />
-              FIFO1
-            </td>
-          </tr>
-        </table>
+	  	<input type="button" id="newChannel" value="New channel"><br/>
+	  	<div id="channels" style="height: 49%; overflow-y: scroll"></div>
       </div>
-      <div id="editorPanel">
-        <canvas id="editor" width="800" height="600">Please use a browser that supports canvas.</canvas>
+    </div>
+
+    <div id="newChannelModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Create Channel</h2>
+        </div>
+        <div class="modal-body">
+          <textarea id="channelProperties" style="width: 90%; height: 150px;" title="Channel Properties">{}</textarea><br/>
+          <input type="button" id="createChannel" value="Create">
+        </div>
       </div>
-    
+    </div>
 
+    <script src="reo2tikz/globalutil.js"></script>
+    <script src="fabric.js-2.2.2/dist/fabric.js"></script>
 
+    <script src="monaco-editor/min/vs/loader.js"></script>
 
-    <div id="animationPanel">
-        <canvas id="animation" width="800" height="600">
-          <span class="unsupported">
-            Your browser does not support or has disabled <noscript>Javascript
-            or</noscript> the &lt;canvas&gt; element, which is required for
-            this application</span>
-        </canvas>
-    <div id="controls">
-          <canvas id="timeline" width="576" height="88"></canvas>
-        <div id="controlButtons">
-            <button class="backward"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- fast-backward icon -->
-  <path d="M 0,1 2,1 2,15 0,15 Z" />
-  <path d="M 9,15 9,1 2,8 Z" />
-  <path d="M 16,15 9,8 16,1 Z" />
-</svg></button>
-<button class="play" data-state="pause">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- play icon -->
-  <path d="M 1,16 1,0 15,8 Z" />
-</svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- pause icon -->
-  <path d="M 2,16 2,0 7,0 7,16 Z" />
-  <path d="M 9,16 9,0 14,0 14,16 Z" />
-</svg></button><button class="forward">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-<!-- fast-forward icon -->
-  <path d="M 0,15 0,1 7,8 Z" />
-  <path d="M 7,15 7,1 14,8 Z" />
-  <path d="M 16,15 14,15 14,1 16,1 Z" />
-</svg></button>
-          
-</div></div></div></div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Editor scripts -->
-    <script src="fabric.js-2.2.2/dist/fabric.min.js"></script>
     <script src="channels.js"></script>
-    <script src="editor.js"></script>  
-    <!-- Playground scripts -->
+    <script src="editor.js"></script>
+
     <script type="text/javascript" src="playground-data.js"></script>
     <script type="text/javascript" src="animation.js"></script>
     <script type="text/javascript" src="interface.js"></script>
+
+    <script src="reo2tikz/reonetwork.js"></script>
+    <script src="reo2tikz/reocomponent.js"></script>
+    <script src="reo2tikz/reocomponenttemplate.js"></script>
+    <script src="reo2tikz/reocomponentimplementation.js"></script>
   </body>
 </html>

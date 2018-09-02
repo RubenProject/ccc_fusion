@@ -1,9 +1,5 @@
 "use strict";
 
-function $(selector, element){
-  return (element || document).querySelectorAll(selector);
-}
-
 window.onerror = function(msg, src, line){
   alert("\"" + msg + "\"\nin " + src.split("/").splice(-1) + ":" + line);
 };
@@ -11,7 +7,7 @@ window.onerror = function(msg, src, line){
 var Playground = Playground || {};
 Reo && (Reo.debug = false);
 
-Playground.Playground = function(elements, data, options){
+Playground.Playground = function(elements, options){
   // Playground object.
   if(!(this instanceof Playground.Playground))
     return;
@@ -21,6 +17,16 @@ Playground.Playground = function(elements, data, options){
 
   this.animation = new Reo.Animation(elements["animation"]);
   this.timeline = new Playground.Timeline(elements["timeline"], this);
+
+  //conversion dictionary
+   this.typeConversion = {
+       sync: "sync",
+       lossysync: "lossySync",
+       syncdrain: "syncDrain",
+       syncspout: "syncSpout",
+       fifo1: "fifo1/0",
+       filter: "sync",
+   };
 
   // prepare controls
   this._elements["controlPlay"] = $(".play", this._elements["controls"])[0];
@@ -48,39 +54,134 @@ Playground.Playground = function(elements, data, options){
   }).bind(this);
 
 
-    //TODO Probably need to change onhashchange to some button event
-  (window.onhashchange = (function(e){
+  this._elements["swap"].onclick = (function(){
+    if (this._elements["swap"].value == "Edit!") {
+        this._elements["swap"].value = "Animate!";
+        this._elements["animationPanel"].style.display = "none";
+        this._elements["editorPanel"].style.display = "block";
+    } else {
+        this._elements["swap"].value = "Edit!";
+        this._elements["animationPanel"].style.display = "block";
+        this._elements["editorPanel"].style.display = "none";
 
-    // update description
-    var connector = playgroundData.input;
-    if(!connector)
-      return;
+        //update content
+        var connector = this.fetchInput()
+        if(!connector)
+          return;
 
-    this.stopAnimation();
+        this.stopAnimation();
 
-    // change connector
-    if(!("nodes" in connector)){
-      this.animation.connector = null;
-      return;
+        // change connector
+        if(!("nodes" in connector)){
+          this.animation.connector = null;
+          return;
+        }
+        //set new input for the animation
+        this.animation.connector = new Reo.Connector(connector.nodes,
+                                                     connector.channels,
+                                                     connector.components);
+
+        // clean up the timeline
+        this.timeline.clear();
+        this.timeline.nodes = [];
+        for(var i in this.animation.connector.nodes){
+          var node = this.animation.connector.nodes[i];
+          if(node.type=="read" || node.type=="write"){
+            this.timeline.io.push([]);
+            this.timeline.nodes.push(node);
+          }
+        }
+
+        this.timeline.draw();
+
     }
-    // give animation engine new info MUCHO IMPORTANTE
-    this.animation.connector = new Reo.Connector(connector.nodes,
-                                                 connector.channels,
-                                                 connector.components);
+  }).bind(this);
 
-    // clean up the timeline
-    this.timeline.clear();
-    this.timeline.nodes = [];
-    for(var i in this.animation.connector.nodes){
-      var node = this.animation.connector.nodes[i];
-      if(node.type=="read" || node.type=="write"){
-        this.timeline.io.push([]);
-        this.timeline.nodes.push(node);
-      }
+  $(window).on("window:resize", function(e) {playground.resizeCanvas()});
+  this.resizeCanvas();
+};
+
+
+Playground.Playground.prototype.resizeCanvas = function(){
+    animation.height = container.clientHeight - 120;
+};
+
+
+
+
+Playground.Playground.prototype.fetchInput = function(){
+    var pdata = {};
+
+    pdata.desc = "input to animation engine";
+    pdata.nodes = {};
+    pdata.channels = {};
+    
+    //convert nodes to correct format
+    for (var i = 0; i < data.nodes.length; i++) {
+        pdata.nodes[data.nodes[i].id] = {
+            coord: [data.nodes[i].left, data.nodes[i].top], 
+            type: null 
+        };
+    }
+    
+    //convert channels to correct format
+    var id;
+    var sources;
+    var sinks;
+    var type;
+    for (var i = 0; i < data.channels.length; i++) {
+        id = data.channels[i].node1.id + data.channels[i].node2.id;
+        sources = [];
+        sinks = [];
+        if (data.channels[i].end1 == "source"){        
+            sources.push(data.channels[i].node1.id);
+        } else if (data.channels[i].end1 == "sink"){
+            sinks.push(data.channels[i].node1.id);
+        }
+        if (data.channels[i].end2 == "source"){
+            sources.push(data.channels[i].node2.id);
+        } else if (data.channels[i].end2 == "sink"){
+            sinks.push(data.channels[i].node2.id);
+        }
+        //convert type names
+        type = playgroundData.channels[this.typeConversion[data.channels[i].name]];
+        pdata.channels[id] = {
+                sources: sources,
+                sinks: sinks,
+                type: type,
+        };
     }
 
-    this.timeline.draw();
-  }).bind(this))();
+    //correct node types...
+    //flags to check for incoming / outgoing connections
+    var in_flag;
+    var out_flag;
+
+    for (var i = 0; i < data.nodes.length; i++) {
+        id = data.nodes[i].id;
+        in_flag = false;
+        out_flag = false;
+        for (var j in pdata.channels) {
+            for (var k = 0; k < pdata.channels[j].sources.length; k++) {
+                if (pdata.channels[j].sources[k] == id)
+                    out_flag = true;
+            }
+            for (var k = 0; k < pdata.channels[j].sinks.length; k++) {
+                if (pdata.channels[j].sinks[k] == id)
+                    in_flag = true;
+            }
+        }
+        if (in_flag == true && out_flag == true) {
+            pdata.nodes[id].type = "merge";
+        } else if (in_flag == true && out_flag == false) {
+            pdata.nodes[id].type = "read";
+        } else if (in_flag == false && out_flag == true) {
+            pdata.nodes[id].type = "write";
+        } else if (in_flag == false && out_flag == false) {
+            pdata.nodes[id].type = "merge";
+        }
+    }
+    return pdata;
 };
 
 Playground.Playground.prototype.setTick = function(tick){
@@ -464,7 +565,10 @@ var playground = (function(data){
   var elements = {
     "timeline": $("#timeline")[0],
     "controls": $("#controls")[0],
-    "animation": $("#animation")[0]
+    "animation": $("#animation")[0],
+    "animationPanel": $("#animationPanel")[0],
+    "editorPanel": $("#editorPanel")[0],
+    "swap": $("#swapButton")[0]
   };
 
   return new Playground.Playground(elements, data);
