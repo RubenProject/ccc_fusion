@@ -104,7 +104,7 @@ Playground.Playground = function(elements, options){
 
 Playground.Playground.prototype.resizeCanvas = function(){
     animation.height = container.clientHeight - 120;
-    animation.width = container.clientWidth / 2;
+    animation.width = c.width;
 };
 
 
