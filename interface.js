@@ -93,7 +93,6 @@ Playground.Playground = function(elements, options){
         }
 
         this.timeline.draw();
-
     }
   }).bind(this);
 
@@ -105,8 +104,6 @@ Playground.Playground = function(elements, options){
 Playground.Playground.prototype.resizeCanvas = function(){
     animation.height = container.clientHeight - 120;
 };
-
-
 
 
 Playground.Playground.prototype.fetchInput = function(){

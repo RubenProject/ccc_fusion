@@ -342,9 +342,13 @@ require(['vs/editor/editor.main', "vs/language/reo/reo"], function(mainModule, r
 
     nodes.push(node);
     data.nodes = nodes;
+<<<<<<< HEAD
     setParent(node);
     canvas.add(node, node.label);
     return node
+=======
+    return node;
+>>>>>>> e98c36c4ff688de2fb524789c5d3275f0de4cbb3
   } //createNode
 
   function createAnchor(left, top) {
@@ -491,6 +495,7 @@ require(['vs/editor/editor.main', "vs/language/reo/reo"], function(mainModule, r
     }
     channels.push(channel);
     data.channels = channels;
+<<<<<<< HEAD
     channel.node1.bringToFront();
     channel.node2.bringToFront();
 
@@ -590,6 +595,11 @@ require(['vs/editor/editor.main', "vs/language/reo/reo"], function(mainModule, r
       loadChannel(channeltypes[i])
   }
 
+=======
+    return channel;
+  } //createChannel
+  
+>>>>>>> e98c36c4ff688de2fb524789c5d3275f0de4cbb3
   function calculateAngle(channel, baseAngle) {
     var angle = 0;
     var x = (channel.node2.get('left') - channel.node1.get('left'));
@@ -1760,5 +1770,9 @@ require(['vs/editor/editor.main', "vs/language/reo/reo"], function(mainModule, r
   //createChannel('syncspout',{x: 100, y: 450},{x: 200, y: 450});
   //createChannel('fifo1',{x: 100, y: 550},{x: 200, y: 550});
   document.getElementById("select").click();
+<<<<<<< HEAD
   updateText();
 });
+=======
+})();
+>>>>>>> e98c36c4ff688de2fb524789c5d3275f0de4cbb3

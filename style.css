@@ -45,12 +45,18 @@ h2 {
 }
 
 #workplace {
+<<<<<<< HEAD
   display: block;
   position: absolute;
   left: 30vw;
   top: 10vh;
   width: 58vw;
   height: 90vh;
+=======
+  height: 700px;
+  margin-left: 300px;
+  margin-right: 200px;
+>>>>>>> e98c36c4ff688de2fb524789c5d3275f0de4cbb3
   background-color: #eee;
 }
 
@@ -106,6 +112,25 @@ h2 {
   display: block;
   margin: auto;
 }
+
+#swapButton {
+  display: table-cell;
+  position: center;
+  width: 250px;
+  height: 50px;
+  font-size: 20pt;
+  vertical-align: middle;
+  outline: none;
+}
+
+input {
+  margin-top: 7px;
+}
+
+h1 {
+  padding-top: 10px;
+}
+
 
 #timeline{
   display: inline-block;
